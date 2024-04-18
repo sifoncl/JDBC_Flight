@@ -52,7 +52,7 @@ public class JDBCTask1 {
             int ticketId = 55;
             String passportNo = "2233BB";
             String passengerName = "Новый пасажир";
-            int flightId = 9;
+            long flightId = 9;
             String seatNo = "B52";
             int cost = 300;
 
@@ -64,7 +64,7 @@ public class JDBCTask1 {
             PreparedStatement statemante3 = connection.prepareStatement(sql3);
             statemante3.setString(1, passportNo);
             statemante3.setString(2, passengerName);
-            statemante3.setInt(3, flightId);
+            statemante3.setLong(3, flightId);
             statemante3.setString(4, seatNo);
             statemante3.setInt(5, cost);
             statemante3.setInt(6, ticketId);
@@ -74,35 +74,48 @@ public class JDBCTask1 {
             System.out.println("Task 4");
 
             String status = "Прилетел";
-            flightId = 9;
+            flightId = 9L;
             passportNo = "ABC123";
             passengerName = "КТО-ТО ТАМЫЧ";
             cost = 2333;
-            String sql4 = """
-                    begin;
-                                        
-                    update flight
-                    set status=?
-                    where id =?;
-                                        
-                    update ticket
-                    set passport_no =?, passenger_name=?, cost =?
-                    where flight_id =9;
-                                        
-                    commit;
+            try {
+                connection.setAutoCommit(false);
+                String sqlUpDate1 = """
+                                
+                        update ticket
+                        set passport_no =?, passenger_name=?, cost =?
+                        where flight_id =?;
+                        """;
+
+                PreparedStatement statemanteUp1 = connection.prepareStatement(sqlUpDate1);
+
+                statemanteUp1.setString(1, passportNo);
+                statemanteUp1.setString(2, passengerName);
+                statemanteUp1.setInt(3, cost);
+                statemanteUp1.setLong(4, flightId);
+
+                String sqlUpDate2 = """
+                        update flight
+                                 set status=?
+                                 where id =?;
                          """;
-            PreparedStatement statemante4 = connection.prepareStatement(sql3);
+                PreparedStatement statemanteUp2 = connection.prepareStatement(sqlUpDate2);
 
-            statemante4.setString(1, status);
-            statemante4.setInt(2, flightId);
-            statemante4.setString(3, passportNo);
-            statemante4.setString(4, passengerName);
-            statemante4.setInt(5, cost);
-            statemante4.setInt(6, flightId);
-            statemante4.getParameterMetaData();
+                statemanteUp2.setString(1, status);
+                statemanteUp2.setLong(2, flightId);
 
+                statemanteUp1.execute();
+                System.out.println("отправил 1");
+                statemanteUp2.execute();
+                System.out.println("отправил 2");
 
-            statemante4.execute();
+                connection.commit();
+                System.out.println("Закомител");
+            } catch (Exception e) {
+                System.out.println(e);
+                System.out.println("Сделал робэк");
+                connection.rollback();
+            }
         }
     }
 }
