@@ -1,6 +1,6 @@
 package org.example;
 
-import DataBase.ConnectionManager;
+import dataBase.ConnectionManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -113,7 +113,7 @@ public class JDBCTask1 {
                 System.out.println("Закомител");
             } catch (Exception e) {
                 System.out.println(e);
-                System.out.println("Сделал робэк");
+                System.out.println("Сделал ролбэк");
                 connection.rollback();
             }
         }
