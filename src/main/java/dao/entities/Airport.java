@@ -3,10 +3,10 @@ package dao.entities;
 import java.util.Objects;
 
 public class Airport {
-   private String code;
-   private String country;
+    private String code;
+    private String country;
 
-   private String city;
+    private String city;
 
     public Airport() {
     }
